@@ -2,6 +2,7 @@
 // explícitas del ejemplo. No evalúa JS arbitrario, no usa eval/Function.
 // TODO TUYO #6 (avanzado): sustituir por ejecución real aislada de código y tests.
 export function runDemo(source, test) {
+  alert(test);
   const match = test.match(/^\s*expect\(canAccess\(\s*(\d+)\s*\)\)\.toBe\(\s*(true|false)\s*\);?\s*$/);
   if (!match) return {kind: 'invalid', passed: false, message: 'Formato admitido en esta demo: expect(canAccess(20)).toBe(true);'};
   const age = Number(match[1]);
