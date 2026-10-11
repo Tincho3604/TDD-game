@@ -23,6 +23,7 @@ function openTerminal() {
   if (open) return;
   open = true;
   game.keys.clear();
+  game.setInputEnabled(false);
   terminal.open();
 }
 
@@ -30,6 +31,7 @@ function closeTerminal() {
   open = false;
   terminal.close();
   game.keys.clear();
+  game.setInputEnabled(true);
 }
 
 window.addEventListener('keydown', e => {

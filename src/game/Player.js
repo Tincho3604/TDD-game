@@ -1,10 +1,11 @@
 export class Player {
   constructor(x = 80, y = 358) {
+    this.max_x = 930;
     this.x = x;
     this.y = y;
     this.width = 30;
     this.height = 54;
-    this.speed = 300;
+    this.speed = 500;
     this.facing = 1;
   }
 
@@ -13,9 +14,7 @@ export class Player {
     if (direction) this.facing = direction;
     this.x += direction * this.speed * dt;
     if ( this.x < 0) this.x = 0;
-    if ( this.x > 930) this.x = 930;
-    console.log("Player x: " + this.x);
-    // TODO TUYO #2: implementar colisiones con obstáculos sólidos.
+    if (this.x > this.max_x) this.x = this.max_x;
   }
 
   draw(ctx) {

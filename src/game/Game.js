@@ -20,6 +20,7 @@ export class Game {
   start() {
     if (this.running) return;
     this.running = true;
+    this.inputEnabled = true;
     window.addEventListener('keydown', this.boundKeyDown);
     window.addEventListener('keyup', this.boundKeyUp);
     window.addEventListener('blur', this.boundBlur);
@@ -33,11 +34,19 @@ export class Game {
     window.removeEventListener('blur', this.boundBlur);
   }
 
+  setInputEnabled(enabled) {
+    this.inputEnabled = enabled;
+  }
+
   keyDown(e) {
+    if (!this.inputEnabled) return;
     const key = e.key.toLowerCase();
     if (['arrowleft', 'arrowright', ' '].includes(key)) e.preventDefault();
     this.keys.add(key);
-    if (key === 'e' && this.nearTerminal()) this.onTerminal();
+    if (key === 'e' && this.nearTerminal()) {
+      e.preventDefault();
+      this.onTerminal();
+    }
   }
 
   nearTerminal() {
