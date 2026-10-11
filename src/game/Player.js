@@ -4,7 +4,7 @@ export class Player {
     this.y = y;
     this.width = 30;
     this.height = 54;
-    this.speed = 230;
+    this.speed = 300;
     this.facing = 1;
   }
 
@@ -12,9 +12,9 @@ export class Player {
     const direction = Number(keys.has('d') || keys.has('arrowright')) - Number(keys.has('a') || keys.has('arrowleft'));
     if (direction) this.facing = direction;
     this.x += direction * this.speed * dt;
-    // TODO TUYO #1: mantener al jugador dentro de los límites del escenario.
-
-    console.log(`X: ${this.x}, Y: ${this.y}`);
+    if ( this.x < 0) this.x = 0;
+    if ( this.x > 930) this.x = 930;
+    console.log("Player x: " + this.x);
     // TODO TUYO #2: implementar colisiones con obstáculos sólidos.
   }
 
