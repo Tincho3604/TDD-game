@@ -15,6 +15,12 @@ export class Game {
     this.boundKeyDown = e => this.keyDown(e);
     this.boundKeyUp = e => this.keys.delete(e.key.toLowerCase());
     this.boundBlur = () => this.keys.clear();
+    this.securityLights = {
+      red: {active: false, x: 830, y: 30},
+      green: {active: false, x: 870, y: 30},
+      blue: {active: false, x: 910, y: 30}
+    };
+    this.lightPulse = 0;
   }
 
   start() {
@@ -38,6 +44,12 @@ export class Game {
     this.inputEnabled = enabled;
   }
 
+  setSecurityLightState(red, green, blue) {
+    this.securityLights.red.active = red;
+    this.securityLights.green.active = green;
+    this.securityLights.blue.active = blue;
+  }
+
   keyDown(e) {
     if (!this.inputEnabled) return;
     const key = e.key.toLowerCase();
@@ -59,6 +71,7 @@ export class Game {
     const dt = this.last ? Math.min((t - this.last) / 1000, .05) : 0;
     this.last = t;
     this.player.update(dt, this.keys);
+    this.lightPulse = (this.lightPulse + dt * 3) % (Math.PI * 2);
     this.draw();
     requestAnimationFrame(t2 => this.frame(t2));
   }
@@ -93,6 +106,7 @@ export class Game {
       c.fillStyle = '#475569';
       c.fillRect(x, 440, 40, 3);
     }
+    this.drawSecurityLights(c);
     this.drawTerminal(c);
     this.drawDoor(c);
     this.player.draw(c);
@@ -106,6 +120,70 @@ export class Game {
       c.font = 'bold 13px monospace';
       c.fillText('[E] TERMINAL', 360, 290);
     }
+  }
+
+  drawSecurityLights(c) {
+    const lights = this.securityLights;
+    const pulse = Math.sin(this.lightPulse) * 0.3 + 0.7;
+
+    // Dibujar cada luz
+    this.drawLight(c, lights.red, '#ef4444', pulse);
+    this.drawLight(c, lights.green, '#22c55e', pulse);
+    this.drawLight(c, lights.blue, '#3b82f6', pulse);
+  }
+
+  drawLight(c, light, color, pulse) {
+    // Base de la luz
+    c.fillStyle = '#475569';
+    c.fillRect(light.x - 15, light.y - 10, 30, 15);
+
+    // Cúpula de la luz
+    if (light.active) {
+      // Glow effect
+      const gradient = c.createRadialGradient(light.x, light.y + 5, 0, light.x, light.y + 5, 25);
+      gradient.addColorStop(0, color);
+      gradient.addColorStop(0.5, color + '80');
+      gradient.addColorStop(1, 'transparent');
+      c.fillStyle = gradient;
+      c.fillRect(light.x - 25, light.y - 15, 50, 40);
+
+      // Luz activa con pulso
+      c.fillStyle = color;
+      c.globalAlpha = pulse;
+      c.beginPath();
+      c.arc(light.x, light.y + 5, 12, 0, Math.PI * 2);
+      c.fill();
+      c.globalAlpha = 1;
+
+      // Brillo
+      c.fillStyle = '#ffffff';
+      c.globalAlpha = pulse * 0.5;
+      c.beginPath();
+      c.arc(light.x - 3, light.y + 2, 4, 0, Math.PI * 2);
+      c.fill();
+      c.globalAlpha = 1;
+    } else {
+      // Luz apagada
+      c.fillStyle = '#1e293b';
+      c.beginPath();
+      c.arc(light.x, light.y + 5, 12, 0, Math.PI * 2);
+      c.fill();
+
+      // Reflection apagado
+      c.fillStyle = '#334155';
+      c.globalAlpha = 0.3;
+      c.beginPath();
+      c.arc(light.x - 3, light.y + 2, 4, 0, Math.PI * 2);
+      c.fill();
+      c.globalAlpha = 1;
+    }
+
+    // Marco de la cúpula
+    c.strokeStyle = '#64748b';
+    c.lineWidth = 2;
+    c.beginPath();
+    c.arc(light.x, light.y + 5, 12, 0, Math.PI * 2);
+    c.stroke();
   }
 
   drawTerminal(c) {

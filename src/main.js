@@ -1,8 +1,8 @@
 import './styles/main.css';
-import {Game} from './game/Game.js';
-import {Terminal} from './ui/Terminal.js';
-import {runDemo} from './tdd/DemoRunner.js';
-import {TddEngine} from './tdd/TddEngine.js';
+import { Game } from './game/Game.js';
+import { Terminal } from './ui/Terminal.js';
+import { runDemo } from './tdd/DemoRunner.js';
+import { TddEngine } from './tdd/TddEngine.js';
 
 const engine = new TddEngine();
 let open = false;
@@ -27,18 +27,50 @@ const terminal = new Terminal({
   onRun: (source, test) => {
     const result = runDemo(source, test);
     terminal.show(result.message, result.passed);
+    updateSecurityLights(result.passed);
     // TODO: conectar engine.recordResult(result) y actualizar indicadores de fase.
     // TODO: cuando engine.phase === 'COMPLETED', asignar game.doorOpen=true.
   }
 });
 
-function loadLevel(levelIndex) {
+function updateSecurityLights(testPassed) {
+  // Controlar las luces en el techo del juego
+  if (testPassed) {
+    game.setSecurityLightState(false, true, false);
+  } else {
+    game.setSecurityLightState(true, false, false);
+  }
+}
+
+async function loadLevel(levelIndex) {
   if (levelIndex < 0 || levelIndex >= levels.length) return;
   currentLevelIndex = levelIndex;
   const level = levels[levelIndex];
 
+  // Leer el archivo de test si existe
+  const testFilePath = `tests/${level.functionName}.test.js`;
+  let testContent = level.exampleTests.join('\n');
+  try {
+    const response = await fetch(testFilePath);
+    if (response.ok) {
+      const fullContent = await response.text();
+      // Extraer el contenido del primer describe (incluyendo nested describes)
+      const describeStart = fullContent.indexOf('describe(');
+      if (describeStart !== -1) {
+        // Encontrar el primer describe y extraer desde ahí
+        testContent = fullContent.substring(describeStart).trim();
+        // Quitar sourceMappingURL si existe
+        testContent = testContent.replace(/\/\/# sourceMappingURL=[^\n]*/g, '');
+      } else {
+        testContent = fullContent;
+      }
+    }
+  } catch (error) {
+    console.log('No se pudo cargar el archivo de test, usando ejemplo:', error);
+  }
+
   // Actualizar título del laboratorio
-  document.querySelector('.subtitle').textContent = `LABORATORIO ${level.id} · ${level.title}`;
+  document.querySelector('.subtitle').textContent = `LABORATORIO ${level.id} · ${level.title.toUpperCase()}`;
 
   // Actualizar descripción en el panel
   const descriptionElement = document.querySelector('#level-description');
@@ -52,16 +84,19 @@ function loadLevel(levelIndex) {
 
   // Actualizar contenido de los textareas
   terminal.setSourceCode(level.starterCode);
-  terminal.setTestCode(level.exampleTests.join('\n'));
+  terminal.setTestCode(testContent);
   terminal.clearResult();
+
+  // Resetear sirenas a estado inicial (RED)
+  updateSecurityLights(false);
 }
 
-function openTerminal() {
+async function openTerminal() {
   if (open) return;
   open = true;
   game.keys.clear();
   game.setInputEnabled(false);
-  loadLevel(currentLevelIndex);
+  await loadLevel(currentLevelIndex);
   terminal.open();
 }
 

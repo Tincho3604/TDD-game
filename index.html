@@ -31,11 +31,6 @@
             El laboratorio está bloqueado. Acercate a la terminal y repará el
             sistema usando el ciclo de TDD.
           </p>
-          <div class="phases">
-            <div id="phase-red" class="active">🔴 RED</div>
-            <div id="phase-green">🟢 GREEN</div>
-            <div id="phase-refactor">🔵 REFACTOR</div>
-          </div>
           <h3>Controles</h3>
           <p>Movete hasta la computadora y presioná <kbd>E</kbd>.</p>
         </aside>
@@ -56,12 +51,22 @@
             Regla: <strong>canAccess(age)</strong> devuelve true para edades de
             18 años o más.
           </p>
-          <label for="test-code">access.test.js</label>
-          <textarea id="test-code" spellcheck="false">expect(canAccess(20)).toBe(true);</textarea>
-          <label for="source-code">access.js</label>
-          <textarea id="source-code" spellcheck="false">function canAccess(age) {
+          <div class="textarea-container">
+            <label for="test-code">access.test.js</label>
+            <div class="textarea-controls">
+              <button class="icon-btn fullscreen-test" title="Pantalla completa">⛶</button>
+            </div>
+            <textarea id="test-code" spellcheck="false">expect(canAccess(20)).toBe(true);</textarea>
+          </div>
+          <div class="textarea-container">
+            <label for="source-code">access.js</label>
+            <div class="textarea-controls">
+              <button class="icon-btn fullscreen-source" title="Pantalla completa">⛶</button>
+            </div>
+            <textarea id="source-code" spellcheck="false">function canAccess(age) {
   return false;
 }</textarea>
+          </div>
           <div class="actions">
             <button id="run-test">▶ Ejecutar prueba</button>
             <button id="reset-code" class="secondary">Restaurar código</button>

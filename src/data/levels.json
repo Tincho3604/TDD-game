@@ -2,22 +2,22 @@
   "levels": [
     {
       "id": 1,
-      "title": "Calibración de Sensor",
-      "description": "Determinar si la lectura del sensor está dentro del rango aceptable (0-100%).",
-      "functionName": "isSensorCalibrated",
-      "starterCode": "function isSensorCalibrated(reading) {\n  return false;\n}",
+      "title": "Código de Acceso",
+      "description": "Ingresa tu código de seguridad para entrar al laboratorio. El código debe tener exactamente 4 dígitos y no debe ser '0000'.",
+      "functionName": "isValidAccessCode",
+      "starterCode": "function isValidAccessCode(code) {\n  return false;\n}",
       "exampleTests": [
-        "expect(isSensorCalibrated(50)).toBe(true);",
-        "expect(isSensorCalibrated(-5)).toBe(false);",
-        "expect(isSensorCalibrated(105)).toBe(false);"
+        "expect(isValidAccessCode('1234')).toBe(true);",
+        "expect(isValidAccessCode('0000')).toBe(false);",
+        "expect(isValidAccessCode('123')).toBe(false);"
       ],
-      "expectedSolution": "function isSensorCalibrated(reading) {\n  return reading >= 0 && reading <= 100;\n}",
+      "expectedSolution": "function isValidAccessCode(code) {\n  return code.length === 4 && code !== '0000' && /^\\d{4}$/.test(code);\n}",
       "hiddenTests": [
-        {"input": 0, "expected": true},
-        {"input": 100, "expected": true},
-        {"input": 0.5, "expected": true},
-        {"input": 99.9, "expected": true},
-        {"input": -0.1, "expected": false}
+        {"input": "9999", "expected": true},
+        {"input": "0001", "expected": true},
+        {"input": "12345", "expected": false},
+        {"input": "abcd", "expected": false},
+        {"input": "12a4", "expected": false}
       ]
     },
     {

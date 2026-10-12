@@ -16,6 +16,47 @@ export class Terminal {
       this.test.value = this.currentTestCode;
       this.result.textContent = 'Código restaurado.';
     });
+
+    // Botones de fullscreen/minimize para test code
+    document.querySelector('.fullscreen-test').addEventListener('click', () => {
+      this.toggleFullscreen('test-code');
+    });
+    // Botones de fullscreen/minimize para source code
+    document.querySelector('.fullscreen-source').addEventListener('click', () => {
+      this.toggleFullscreen('source-code');
+    });
+  }
+
+  toggleFullscreen(textareaId) {
+    const container = document.querySelector(`#${textareaId}`).parentElement;
+    container.classList.toggle('fullscreen');
+    if (container.classList.contains('fullscreen')) {
+      // Agregar botón de minimizar visible en fullscreen
+      const minimizeBtn = document.createElement('button');
+      minimizeBtn.className = 'fullscreen-minimize';
+      minimizeBtn.textContent = '− Minimizar';
+      minimizeBtn.style.cssText = 'position: fixed; top: 10px; right: 10px; z-index: 1001; padding: 10px 20px; background: #334155; color: white; border: 1px solid #475569; border-radius: 7px; cursor: pointer;';
+      minimizeBtn.onclick = () => {
+        container.classList.remove('fullscreen');
+        minimizeBtn.remove();
+      };
+      document.body.appendChild(minimizeBtn);
+
+      // ESC también cierra el fullscreen
+      const escapeHandler = (e) => {
+        if (e.key === 'Escape') {
+          container.classList.remove('fullscreen');
+          minimizeBtn.remove();
+          document.removeEventListener('keydown', escapeHandler);
+        }
+      };
+      document.addEventListener('keydown', escapeHandler);
+    }
+  }
+
+  toggleMinimize(textareaId) {
+    const container = document.querySelector(`#${textareaId}`).parentElement;
+    container.classList.toggle('minimized');
   }
 
   open() {

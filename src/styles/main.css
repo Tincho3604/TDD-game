@@ -180,6 +180,59 @@ kbd {
   min-height: 115px;
 }
 
+.textarea-container {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.textarea-controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 5px;
+  margin-top: -5px;
+}
+
+.icon-btn {
+  background: #334155;
+  color: #cbd5e1;
+  border: 1px solid #475569;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover {
+  background: #475569;
+  color: white;
+}
+
+.textarea-container.fullscreen .textarea-controls {
+  display: none;
+}
+
+.textarea-container.fullscreen textarea {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  border-radius: 0;
+  resize: none;
+}
+
+.textarea-container.minimized textarea {
+  height: 40px;
+  min-height: 40px;
+  overflow: hidden;
+}
+
 .actions {
   display: flex;
   gap: 10px;
